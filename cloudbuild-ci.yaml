@@ -3,7 +3,7 @@ steps:
   - name: "gcr.io/kaniko-project/executor:latest"
     id: "build-test"
     args:
-      - "--context=dir://test-folder"
+      - "--context=dir://."
       - "--destination=europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
       - "--cache=true"
       - "--build-arg=TEST=true"
@@ -11,7 +11,7 @@ steps:
   # Formatter.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "formatter"
-    dir: "test-folder"
+    dir: "."
     waitFor: ["build-test"]
     entrypoint: "black"
     args: ["--check", "."]
@@ -19,7 +19,7 @@ steps:
   # Linter.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "linter"
-    dir: "test-folder"
+    dir: "."
     waitFor: ["build-test"]
     entrypoint: "pylint"
     args:
@@ -30,7 +30,7 @@ steps:
   # Unit Tests.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "unit-test"
-    dir: "test-folder"
+    dir: "."
     waitFor: ["build-test"]
     entrypoint: "pytest"
 
@@ -38,7 +38,7 @@ steps:
     waitFor:
       ["formatter", "linter",  "unit-test"]
     args:
-      - "--context=dir://test-folder"
+      - "--context=dir://."
       - "--destination=europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp"
       - "--cache=true"
 
