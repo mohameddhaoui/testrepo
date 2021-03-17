@@ -11,7 +11,7 @@ steps:
   # Formatter.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "formatter"
-    dir: "python/staging/industry-data-platform"
+    dir: "test-folder"
     waitFor: ["build-test"]
     entrypoint: "black"
     args: ["--check", "."]
@@ -19,52 +19,26 @@ steps:
   # Linter.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "linter"
-    dir: "python/staging/industry-data-platform"
+    dir: "test-folder"
     waitFor: ["build-test"]
     entrypoint: "pylint"
     args:
-      - industry/
+      - testname/
       - bin/
-      - tests/bin/
-      - tests/integration/
-      - tests/tableconf/
-      - tests/utils/
-
-  # Validate TableConf files.
-  - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
-    id: "validate-conf"
-    dir: "python/staging/industry-data-platform"
-    waitFor: ["build-test"]
-    entrypoint: "bash"
-    args:
-      - "-eEuo"
-      - "pipefail"
-      - "-c"
-      - find ./conf -name "tableconf.yaml" -o -name "tableconf.yml" | xargs toolbox validate-tableconf
+      - tests/
 
   # Unit Tests.
   - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
     id: "unit-test"
-    dir: "python/staging/industry-data-platform"
+    dir: "test-folder"
     waitFor: ["build-test"]
     entrypoint: "pytest"
 
-  # Integration Tests.
-  - name: "europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp-test"
-    id: "integration-test"
-    dir: "python/staging/industry-data-platform"
-    waitFor: ["build-test"]
-    entrypoint: "pytest"
-    args: ["tests/integration"]
-    env:
-      - TEST_GCP_PROJECT_ID=prj-data-indu-sdx-97c2
-
-  # Build runtime image.
   - name: "gcr.io/kaniko-project/executor:latest"
     waitFor:
-      ["formatter", "linter", "validate-conf", "unit-test", "integration-test"]
+      ["formatter", "linter",  "unit-test"]
     args:
-      - "--context=dir://python/staging/industry-data-platform"
+      - "--context=dir://test-folder"
       - "--destination=europe-west1-docker.pkg.dev/$PROJECT_ID/industry/idp"
       - "--cache=true"
 
