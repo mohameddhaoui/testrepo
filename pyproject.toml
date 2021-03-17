@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "testname"
+version = "0.1.0"
+description = ""
+authors = ["Servier's Industry Feature Team"]
+
+[tool.poetry.dependencies]
+python = ">=3.7.1,<4.0"
+PyYAML = "^5.3.1"
+marshmallow = "^3.9.1"
+marshmallow-oneofschema = "^2.1.0"
+click = "^7.1.2"
+pytz = "^2020.4"
+smart-open = {extras = ["gcp"], version = "^4.0.1"}
+pandas = "1.2.0"
+gcsfs = "^0.7.1"
+google-cloud-bigquery = "^2.6.1"
+google-cloud-storage = "^1.35.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.1"
+ipython = "^7.19.0"
+black = "^20.8b1"
+pylint = "^2.6.0"
+ipdb = "^0.13.4"
+
+[tool.poetry.scripts]
+toolbox = "bin.pipeline:cli"
+
+
+[tool.pytest.ini_options]
+testpaths = ["./tests/bin","./tests/industry"]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "missing-module-docstring",
+    "logging-fstring-interpolation",
+    "fixme",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-return-statements"
+]
+
+[tool.pylint."FORMAT"]
+good-names = ["f", "i", "tz", "to", "it", "df"]
+
+# See: https://stackoverflow.com/questions/29206482/pylint-duplicate-code-false-positive
+[tool.pylint."SIMILARITIES"]
+min-similarity-lines = 12
+ignore-comments= "yes"
+ignore-docstrings= "yes"
+ignore-imports = "yes"
