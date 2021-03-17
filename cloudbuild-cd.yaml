@@ -1,0 +1,29 @@
+steps:
+  - id: "terraform init"
+    name: "hashicorp/terraform:${_TERRAFORM_VERSION}"
+    dir: ${_BUILD_DIR}
+    args:
+      ["init", "-input=false", "-backend-config=bucket=${_STATE_BUCKET_NAME}"]
+
+  - id: "terraform plan"
+    name: "hashicorp/terraform:${_TERRAFORM_VERSION}"
+    dir: ${_BUILD_DIR}
+    args:
+      [
+        "plan",
+        "-out=tfplan",
+        "-input=false",
+        "-var-file=environments/${_TF_ENVIRONMENT}.tfvars",
+        ".",
+      ]
+
+  - id: "terraform apply"
+    name: "hashicorp/terraform:${_TERRAFORM_VERSION}"
+    dir: ${_BUILD_DIR}
+    args: ["apply", "-input=false", "-auto-approve", "./tfplan"]
+
+options:
+  env:
+    - "TF_VAR_tf_state_bucket=$_STATE_BUCKET_NAME"
+    - "TF_VAR_terraform_sa_email=$_TF_TERRAFORM_SA_EMAIL"
+    - "TF_VAR_env=$_TF_ENVIRONMENT"
