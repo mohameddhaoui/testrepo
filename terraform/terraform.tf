@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~>0.14.7"
+  required_version = ">=0.13.0, <0.14"
   #https://www.terraform.io/upgrade-guides/0-13.html#explicit-provider-source-locations
   required_providers {
     google      = "~> 3.58.0"
