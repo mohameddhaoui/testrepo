@@ -11,10 +11,7 @@ import click
     help="Data source name.",
 )
 @click.pass_context
-def cli(    ctx: click.Context,
-
-    source: str
-    ):
+def cli(ctx: click.Context, source: str):
     """
     Root command.
     """
