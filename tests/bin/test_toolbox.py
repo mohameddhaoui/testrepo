@@ -1,2 +1,6 @@
 def test_dummy():
-    assert 1 == 1
+    """
+    Basic test
+    """
+    myvar= 1
+    assert myvar == 1
